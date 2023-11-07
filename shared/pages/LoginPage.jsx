@@ -1,6 +1,6 @@
 "use client"
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 
 const LoginPage = () => {
@@ -11,14 +11,16 @@ const LoginPage = () => {
     const handleLogin = () => {
         axios.post('http://127.0.0.1:8000/api/admin/login', { 'email': email, 'password': password })
             .then(res => {
-                if (res?.status === 200) {
-                    // localStorage.setItem('token', "Bearer " + res.data.data.token);
-                    // localStorage.setItem('user', "Bearer " + res.data.data.user);
-                    // router.replace('/')
-                    console.log(res)
+
+                if (res?.data?.status === true) {
+                    localStorage.setItem('token', "Bearer " + res.data.data.token);
+                    localStorage.setItem('user', "Bearer " + res.data.data.user);
 
                 }
 
+            }
+            ).then(res => {
+                location.href = "/dashboard"
             }
             )
             .catch(function (err) {
