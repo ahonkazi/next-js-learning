@@ -11,7 +11,7 @@ const AuthLess = ({ children }) => {
     }
 
     if (authContext.auth) {
-        redirect('/');
+        redirect('/dashboard');
     } else {
         return children;
     }

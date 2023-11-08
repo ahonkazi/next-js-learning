@@ -3,6 +3,7 @@ import axios from 'axios'
 import './globals.css'
 import Header from '../shared/components/Header'
 import { AuthContext } from '../context/AuthContext';
+// axios.defaults.headers.common = { 'Authorization': localStorage.getItem('token') };
 
 export default function RootLayout({ children }) {
   return (
@@ -10,7 +11,6 @@ export default function RootLayout({ children }) {
       <title>NextJs</title>
       <body>
         <AuthContext>
-          <Header />
           {children}
         </AuthContext>
       </body>
