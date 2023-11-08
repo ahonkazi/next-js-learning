@@ -5,9 +5,11 @@ import React, { useContext } from 'react'
 import { PrivateComponent } from '../../components/PrivateRoute'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
-
+import { GetAuthContext } from '../../context/AuthContext'
 const Header = () => {
+    const authContext = useContext(GetAuthContext);
     const router = useRouter()
+    console.log(authContext.loading);
     const handleLogout = () => {
         axios.post('http://127.0.0.1:8000/api/admin/logout').then(res => {
             if (res.data.status) {
@@ -29,19 +31,22 @@ const Header = () => {
                         <Link className='text-lg' href='/'>Home</Link>
                     </li>
 
-                    <PrivateComponent authLessComponent={
-                        <li className='px-4 bg-slate-600'>
-                            <Link className='text-lg' href='/login'>Login</Link>
-                        </li>
-                    }>
-                        <li className='px-4 bg-slate-600'>
-                            <Link className='text-lg' href='/dashboard'>Dashboard</Link>
-                        </li>
-                        <li className='px-4 bg-slate-600'>
-                            <button onClick={() => handleLogout()} className='text-lg'>Logout</button>
-                        </li>
 
-                    </PrivateComponent>
+
+
+                    {
+                        authContext.loading ? 'loading...' :
+                            authContext.auth ? <>
+                                <li className='px-4 bg-slate-600'>
+                                    <Link className='text-lg' href='/dashboard'>Dashboard</Link>
+                                </li>
+                                <li className='px-4 bg-slate-600'>
+                                    <button onClick={() => handleLogout()} className='text-lg'>Logout</button>
+                                </li></>
+                                : <li className='px-4 bg-slate-600'>
+                                    <Link className='text-lg' href='/login'>Login</Link>
+                                </li>
+                    }
 
 
 

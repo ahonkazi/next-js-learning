@@ -1,34 +1,27 @@
 "use client"
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import LoadingPage from '../shared/pages/LoadingPage'
 import { redirect } from 'next/navigation';
 import axios from 'axios';
+import { GetAuthContext } from '../context/AuthContext';
 axios.defaults.headers.common = { 'Authorization': localStorage.getItem('token') };
 const PrivateRoute = ({ children }) => {
-  const [loading, setLoading] = useState(true);
-  const [auth, setAuth] = useState(false);
-  useEffect(() => {
-    axios.post('http://127.0.0.1:8000/api/admin/auth-info').then(res => {
-      setAuth(true);
-      setLoading(false);
-    }).catch(err => {
-      setLoading(false);
+  const authContext = useContext(GetAuthContext);
 
-    })
-  }, [])
 
-  if (loading) {
+  if (authContext.loading) {
     return <LoadingPage />
   }
 
-  if (auth && !loading) {
-    return children;
-  } else {
-    redirect('/login')
+  if (authContext.loading === false) {
+    if (authContext.auth) {
+      return children;
+    } else {
+      redirect('/login')
+
+    }
 
   }
-
-
 }
 export default PrivateRoute
 
@@ -39,7 +32,7 @@ export const PrivateComponent = ({ children, loadingComponent = "", authLessComp
       if (res?.data?.role === 'Admin') {
         setAuthInfo({ loading: false, auth: true })
       }
-      console.log(res.data);
+      // console.log(res.data);
     }).catch(err => {
       if (err?.response?.data?.status === false) {
         setAuthInfo({ loading: false, auth: false })
